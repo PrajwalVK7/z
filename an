@@ -1,0 +1,99 @@
+import React, { useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, ScrollView, Animated } from 'react-native';
+import { useSelector } from 'react-redux'; // Assuming you use react-redux
+
+const ProgressScreen = () => {
+  // Fetch titles from Redux state
+  const progressTitles = useSelector(state => state.progressTitles);
+
+  // Create animated values for each progress bar
+  const progressValues = useRef(progressTitles.map(() => new Animated.Value(0))).current;
+
+  useEffect(() => {
+    // Function to animate progress bars sequentially
+    const animateProgress = (index = 0) => {
+      if (index < progressTitles.length) {
+        Animated.timing(progressValues[index], {
+          toValue: 1, // Animate to 100%
+          duration: 1000, // Duration of the animation
+          useNativeDriver: false,
+        }).start(() => animateProgress(index + 1));
+      }
+    };
+
+    animateProgress(); // Start the animation
+  }, [progressValues, progressTitles]);
+
+  return (
+    <ScrollView style={styles.container}>
+      <Text style={styles.title}>Matching Behavior Trends...</Text>
+      {progressTitles.map((item, index) => (
+        <View key={item.id} style={styles.progressItem}>
+          <Text style={[styles.label, { color: item.color }]}>{item.id.toUpperCase()}</Text>
+          <Animated.View
+            style={[
+              styles.progressBar,
+              {
+                backgroundColor: item.color,
+                width: progressValues[index].interpolate({
+                  inputRange: [0, 1],
+                  outputRange: ['0%', '100%'],
+                }),
+              },
+            ]}
+          />
+          <Animated.Text style={[styles.percentage, { color: item.color }]}>
+            {progressValues[index].interpolate({
+              inputRange: [0, 1],
+              outputRange: ['0%', '100%'],
+            })}
+          </Animated.Text>
+        </View>
+      ))}
+      <Text style={styles.footerText}>
+        Sit tight! We're building your perfect plan based on millions of data points from successful users
+      </Text>
+    </ScrollView>
+  );
+};
+
+
+
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: '#FFF',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  progressItem: {
+    marginBottom: 20,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  progressBar: {
+    height: 10,
+    borderRadius: 5,
+  },
+  percentage: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'right',
+    marginTop: 5,
+  },
+  footerText: {
+    textAlign: 'center',
+    fontSize: 14,
+    marginTop: 20,
+  },
+});
+
