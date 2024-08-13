@@ -32,7 +32,7 @@ const PlanScreen = () => {
         const planArray = snapshot.docs.map(doc => doc.data());
         setPlans(planArray);
         if (planArray.length > 0) {
-          setCurrentPlanIndex(0);  // Start with the first plan
+          setCurrentPlanIndex(0);  
         }
       });
   }, []);
@@ -42,13 +42,13 @@ const PlanScreen = () => {
     if (nextScreenIndex < plans.length) {
       setCurrentPlanIndex(nextScreenIndex);
     } else {
-      // Navigate to another screen after completing all plans
-      navigation.navigate('NextScreen'); // Replace 'NextScreen' with your screen's name
+      // Navigate  
+      navigation.navigate('NextScreen'); 
     }
   };
 
   const currentPlan = plans[currentPlanIndex];
-  if (!currentPlan) return null; // Return null if currentPlan is not available yet
+  if (!currentPlan) return null;  
 
   return (
     <View style={screenStyles.container}>
