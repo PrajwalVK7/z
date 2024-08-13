@@ -39,11 +39,10 @@ const OnboardingScreen = () => {
   const [screenIndex, setScreenIndex] = useState(0);
   const [total, setTotal] = useState(0);
   const dispatch = useAppDispatch();
-
-  // Fetch data from Firestore only if the data isn't already loaded
+ 
   const getData = async () => {
-    if (surveyData.length === 0) { // Fetch only if surveyData is empty
-      firestore()
+    if (surveyData.length === 0) { 
+firestore()
         .collection('survey')
         .get()
         .then((item): any => {
@@ -67,7 +66,7 @@ const OnboardingScreen = () => {
     }
   }, []);
 
-  // Calculate the total number of screens
+  
   useMemo(() => {
     let totalLength = 0;
     surveyData.forEach((item: any) => {
@@ -76,7 +75,7 @@ const OnboardingScreen = () => {
     setTotal(totalLength);
   }, [surveyData]);
 
-  // Handle navigation to special screens based on progress
+   
   useEffect(() => {
     if (currentSectionIndex === 1) {
       navigation.navigate(screenNames.infoScreen1, {
