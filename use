@@ -1,0 +1,72 @@
+const handleNext = useCallback(() => {
+  const currentSection = surveyData[currentSectionIndex];
+  const nextScreenIndex = currentScreenIndex + 1;
+
+  if (nextScreenIndex < currentSection.screens.length) {
+    setCurrentScreenIndex(nextScreenIndex);
+    setSection(currentSection.screens[nextScreenIndex]);
+  } else {
+    const nextSectionIndex = currentSectionIndex + 1;
+    if (nextSectionIndex < surveyData.length) {
+      setCurrentSectionIndex(nextSectionIndex);
+      setCurrentScreenIndex(0);
+      setSection(surveyData[nextSectionIndex].screens[0]);
+    } else {
+      navigation.navigate(screenNames.Payment_Screen1);
+    }
+  }
+
+  const updatedScreenIndex = screenIndex + 1;
+  const currentProgress = (updatedScreenIndex / total) * 100;
+  setScreenIndex(updatedScreenIndex);
+  setProgress(currentProgress);
+
+  dispatch(
+    updateSurveyProgress({
+      currentScreen:
+        nextScreenIndex < currentSection.screens.length ? nextScreenIndex : 0,
+      currentSection:
+        currentSectionIndex < surveyData.length
+          ? currentSectionIndex
+          : currentSectionIndex,
+      progress: currentProgress,
+    }),
+  );
+}, [currentScreenIndex, currentSectionIndex, screenIndex, total, surveyData, navigation, dispatch]);
+
+const handlePrev = useCallback(() => {
+  const currentSection = surveyData[currentSectionIndex];
+  const prevScreenIndex = currentScreenIndex - 1;
+
+  if (prevScreenIndex >= 0) {
+    setCurrentScreenIndex(prevScreenIndex);
+    setSection(currentSection.screens[prevScreenIndex]);
+  } else {
+    const prevSectionIndex = currentSectionIndex - 1;
+    if (prevSectionIndex >= 0) {
+      const prevSection = surveyData[prevSectionIndex];
+      setCurrentSectionIndex(prevSectionIndex);
+      const lastScreenIndex = prevSection.screens.length - 1;
+      setCurrentScreenIndex(lastScreenIndex);
+      setSection(prevSection.screens[lastScreenIndex]);
+    } else {
+      console.log('Already at the first screen');
+    }
+  }
+
+  const updatedScreenIndex = screenIndex > 0 ? screenIndex - 1 : 0;
+  const currentProgress = (updatedScreenIndex / total) * 100;
+  setScreenIndex(updatedScreenIndex);
+  setProgress(currentProgress);
+
+  dispatch(
+    updateSurveyProgress({
+      currentScreen: prevScreenIndex >= 0 ? prevScreenIndex : 0,
+      currentSection:
+        currentSectionIndex - 1 >= 0
+          ? currentSectionIndex - 1
+          : currentSectionIndex,
+      progress: currentProgress,
+    }),
+  );
+}, [currentScreenIndex, currentSectionIndex, screenIndex, total, surveyData, dispatch]);
